@@ -1,4 +1,4 @@
-# MK SPECTRA – Contact form backend (Java / Spring Boot)
+# MK SPECTRA – Contact form backend (Java / Spring Boot),
 
 Receives the website contact form and emails it to `mkspectra27@gmail.com`.
 
