@@ -1,0 +1,38 @@
+package com.mkspectra.contact;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.mail.MailException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+
+@RestControllerAdvice
+public class ApiExceptionHandler {
+
+    private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Map<String, String>> invalid(MethodArgumentNotValidException ex) {
+        String msg = ex.getBindingResult().getFieldErrors().stream()
+                .findFirst().map(e -> e.getDefaultMessage()).orElse("Please check the form and try again.");
+        return ResponseEntity.badRequest().body(Map.of("message", msg));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> unreadable() {
+        return ResponseEntity.badRequest().body(Map.of("message", "Invalid request."));
+    }
+
+    @ExceptionHandler(MailException.class)
+    public ResponseEntity<Map<String, String>> mailFailed(MailException ex) {
+        log.error("Could not send enquiry email", ex);
+        return ResponseEntity.status(HttpStatus.BAD_GATEWAY)
+                .body(Map.of("message", "Sorry, we could not send your message right now. Please email us directly."));
+    }
+}
