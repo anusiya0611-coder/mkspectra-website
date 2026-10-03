@@ -147,7 +147,7 @@
 <script>
 /* Contact form -> Java (Spring Boot) backend -> email. Runs before script.js and takes over the form submit. */
 (function () {
-  var API_URL = 'http://localhost:8080/api/contact'; // CHANGE to your deployed backend URL when you go live
+  var API_URL = '/api/contact';
   var form = document.getElementById('contactForm');
   if (!form) return;
   var status = document.getElementById('formStatus');
